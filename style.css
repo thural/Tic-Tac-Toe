@@ -1,0 +1,50 @@
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    font-size: 16px;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    background-color: #e5e7eb;
+    font-family: -apple-system, BlinkMacSystemFont, Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.scoreBoard {
+    margin: 1.5rem;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    font-size: 1.8rem;
+}
+
+.player {
+    padding: .5rem 1rem .5rem  1rem;
+}
+
+.playing {
+    border-radius: 50px;
+    background-color: #fb923c;
+}
+
+.playBoard {
+    display: grid;
+    grid-template: repeat(3, 1fr) / repeat(3, 1fr);
+    gap: .5rem;
+    width:fit-content;
+    height: fit-content;
+}
+
+[cell] {
+    width: 6rem;
+    height: 6rem;
+    border-radius: 10px;
+    background-color: #d1d5db;
+}
+
+.roundBoard {
+    margin: 1rem;
+    font-size: 1.8rem;
+}
