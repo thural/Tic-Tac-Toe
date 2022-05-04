@@ -1,46 +1,57 @@
 let playerMark = 'X';
 let roundCount = 1;
-let cells = new Array(10);
+
+const createObject = (repeats, value) => {
+    let object = {};
+    for (let i = 1; i <= repeats; i++) {
+        object[i] = value
+    }
+    return object
+};
+
+let cells = createObject(9, '');
 
 const cellBoard = document.querySelectorAll('[cell]');
 const message = document.querySelector('.message');
 
-let lines = [];
+const lines = [
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9],
+    [1, 4, 7],
+    [2, 5, 8],
+    [3, 6, 9],
+    [1, 5, 9],
+    [3, 5, 7]
+];
 
-const refreshLines = () => {
-    lines = [
-        [cells[1], cells[2], cells[3]],
-        [cells[4], cells[5], cells[6]],
-        [cells[7], cells[8], cells[9]],
-        [cells[1], cells[4], cells[7]],
-        [cells[2], cells[5], cells[8]],
-        [cells[3], cells[6], cells[9]],
-        [cells[1], cells[5], cells[9]],
-        [cells[3], cells[5], cells[7]]
-    ];
-};
-refreshLines()
-
-const markInLines = (playersMark) => {
+const markInLines = (playerMark) => {
     let selectedLines = [];
 
     lines.forEach(line => {
-        if (line.includes(playersMark)) selectedLines.push(line)
+        const present = () => {
+            let isTrue = false;
+            line.forEach(cell => {
+                if (cells[cell] == playerMark) isTrue = true
+            })
+            return isTrue
+        }
+        if (present) selectedLines.push(line)
     });
     return selectedLines
 };
 
-const filledLine = (playersMark) => {
-    let selectedLines = markInLines(playersMark);
+const filledLine = (playerMark) => {
+    let selectedLines = markInLines(playerMark);
     let won = false;
     let winningLine = [];
 
-    selectedLines.forEach(pattern => {
+    selectedLines.forEach(line => {
         let count = 0;
-        pattern.forEach(element => {
-            if (element == playersMark) count++
+        line.forEach(cell => {
+            if (cells[cell] == playerMark) count++
         });
-        if (count == 3) won = true, winningLine = pattern
+        if (count == 3) won = true, winningLine = line
         else count = 0
     });
 
@@ -54,7 +65,6 @@ cellBoard.forEach(cell => cell.addEventListener('click', (e) => {
     if (mark == '') {
         e.target.textContent = playerMark;
         cells[cellNumber] = playerMark;
-        refreshLines();
         filledLine(playerMark).won ? roundOver() : switchPlayer()
     }
 })
@@ -80,4 +90,14 @@ const newRound = () => {
 
 const gamePlay = () => {
 
+}
+
+const botPlaysEasy = () => {
+    let runs = true;
+
+    if (runs) lines.forEach(line => {
+        if (runs) line.forEach(cell => {
+            if (runs) if (cells[cell] == '') cells[cell] = 'O', runs = false
+        })
+    })
 }
