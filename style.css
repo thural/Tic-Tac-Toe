@@ -26,7 +26,7 @@ body {
 
 .playing {
     border-radius: 50px;
-    background-color: #fb923c;
+    background-color: #fdba74;
 }
 
 .playBoard {
@@ -38,13 +38,17 @@ body {
 }
 
 [cell] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 6rem;
     height: 6rem;
+    font-size: 4rem;
     border-radius: 10px;
     background-color: #d1d5db;
 }
 
-.roundBoard {
+.message {
     margin: 1rem;
     font-size: 1.8rem;
 }
