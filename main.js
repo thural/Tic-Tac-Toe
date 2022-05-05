@@ -11,10 +11,10 @@ const createObject = (repeats, value) => {
 
 let cells = createObject(9, '');
 
-const cellBoard = document.querySelectorAll('[cell]');
+const allCells = document.querySelectorAll('[cell]');
 const message = document.querySelector('.message');
 
-const lines = [
+const logicalLines = [
     [1, 2, 3],
     [4, 5, 6],
     [7, 8, 9],
@@ -28,7 +28,7 @@ const lines = [
 const markInLines = (playerMark) => {
     let selectedLines = [];
 
-    lines.forEach(line => {
+    logicalLines.forEach(line => {
         const present = () => {
             let isTrue = false;
             line.forEach(cell => {
@@ -59,7 +59,7 @@ const filledLine = (playerMark) => {
     else return false
 };
 
-cellBoard.forEach(cell => cell.addEventListener('click', (e) => {
+allCells.forEach(cell => cell.addEventListener('click', (e) => {
     const mark = e.target.textContent;
     const cellNumber = e.target.getAttribute('cell');
     if (mark == '') {
@@ -72,7 +72,7 @@ cellBoard.forEach(cell => cell.addEventListener('click', (e) => {
 );
 
 const switchPlayer = () => {
-    if (playerMark == 'X') playerMark = 'O'
+    if (playerMark == 'X') playerMark = 'O', botPlaysEasy()
     else playerMark = 'X'
 };
 
@@ -84,7 +84,7 @@ const roundOver = () => {
 
 const newRound = () => {
     message.textContent = `round ${roundCount}`;
-    cellBoard.forEach(cell => cell.textContent = '');
+    allCells.forEach(cell => cell.textContent = '');
     cells = new Array(10)
 }
 
@@ -92,12 +92,60 @@ const gamePlay = () => {
 
 }
 
-const botPlaysEasy = () => {
-    let runs = true;
+const findCleanLines = () => {
+    let cleanLines = [];
 
-    if (runs) lines.forEach(line => {
-        if (runs) line.forEach(cell => {
-            if (runs) if (cells[cell] == '') cells[cell] = 'O', runs = false
-        })
-    })
+    logicalLines.forEach(line => {
+        let continues = true;
+        let count = 0;
+        if (continues) line.forEach(cell => {
+            if (cells[cell] == 'X') continues = false;
+            else count++
+        });
+        if (count == 3) cleanLines.push(line)
+        else count = 0
+    });
+    return cleanLines
 }
+
+const findDirtyLines = () => {
+    let dirtyLines = [];
+
+    logicalLines.forEach(line => {
+        let continues = true;
+        let count = 0;
+        if (continues) line.forEach(cell => {
+            if (cells[cell] == 'X') count++
+        });
+        if (count < 2 && count > 0) dirtyLines.push(line)
+        else count = 0
+    });
+    return dirtyLines
+}
+
+const botPlaysEasy = () => {
+    const marksCellWithin = (lines) => {
+        let continues = true;
+        if (continues) lines.forEach(line => {
+
+            if (continues) line.forEach(cell => {
+                if (continues) if (cells[cell] == '') {
+                    cells[cell] = 'O';
+                    drawsMark('O', cell);
+                    switchPlayer();
+                    continues = false
+                }
+            })
+        })
+    }
+    let cleanLines = findCleanLines();
+    let dirtyLines = findDirtyLines();
+    if (cleanLines.length) marksCellWithin(cleanLines)
+    else marksCellWithin(dirtyLines);
+};
+
+const drawsMark = (mark, cell) => {
+    const targetCell = document.querySelector(`[cell = '${cell}']`);
+    targetCell.textContent = `${mark}`;
+    console.log(targetCell)
+};
