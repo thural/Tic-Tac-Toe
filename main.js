@@ -165,8 +165,10 @@ const botPlaysHard = () => {
     let linesWithOneO = getLinesWith(1, 'O');
     let linesWithTwoO = getLinesWith(2, 'O');
     let linesWithTwoX = getLinesWith(2, 'X');
+    let linesWithOneX = getLinesWith(1, 'X');
 
     if (linesWithTwoX.length) marksCellWithin(linesWithTwoX)
+    else if (linesWithOneX.length) marksCellWithin(linesWithOneX)
     else if (linesWithTwoO.length) marksCellWithin(linesWithTwoO)
     else if (linesWithOneO.length) marksCellWithin(linesWithOneO)
     else if (cleanLine.length) marksCellWithin(cleanLine)
