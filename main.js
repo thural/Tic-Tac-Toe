@@ -72,7 +72,7 @@ allCells.forEach(cell => cell.addEventListener('click', (e) => {
 );
 
 const switchPlayer = () => {
-    if (playerMark == 'X') playerMark = 'O', botPlaysEasy()
+    if (playerMark == 'X') playerMark = 'O', botPlaysHard()
     else playerMark = 'X'
 };
 
@@ -86,66 +86,89 @@ const newRound = () => {
     message.textContent = `round ${roundCount}`;
     allCells.forEach(cell => cell.textContent = '');
     cells = new Array(10)
-}
+};
 
 const gamePlay = () => {
 
-}
+};
 
-const findCleanLines = () => {
-    let cleanLines = [];
-
-    logicalLines.forEach(line => {
-        let continues = true;
-        let count = 0;
-        if (continues) line.forEach(cell => {
-            if (cells[cell] == 'X') continues = false;
-            else count++
-        });
-        if (count == 3) cleanLines.push(line)
-        else count = 0
-    });
-    return cleanLines
-}
-
-const findDirtyLines = () => {
-    let dirtyLines = [];
+const getLinesWith = (number, mark) => {
+    let lines = [];
 
     logicalLines.forEach(line => {
         let continues = true;
         let count = 0;
+        let hasEmptyCell = false;
+
         if (continues) line.forEach(cell => {
-            if (cells[cell] == 'X') count++
+            if (cells[cell] == mark) count++
+            if (cells[cell] == '') hasEmptyCell = true
         });
-        if (count < 2 && count > 0) dirtyLines.push(line)
-        else count = 0
+
+        if (count >= number) {
+            if (hasEmptyCell) lines.push(line)
+            else count = 0
+        } else count = 0
     });
-    return dirtyLines
+
+    return lines
 }
 
-const botPlaysEasy = () => {
-    const marksCellWithin = (lines) => {
-        let continues = true;
-        if (continues) lines.forEach(line => {
-
-            if (continues) line.forEach(cell => {
-                if (continues) if (cells[cell] == '') {
-                    cells[cell] = 'O';
-                    drawsMark('O', cell);
-                    switchPlayer();
-                    continues = false
-                }
-            })
-        })
-    }
-    let cleanLines = findCleanLines();
-    let dirtyLines = findDirtyLines();
-    if (cleanLines.length) marksCellWithin(cleanLines)
-    else marksCellWithin(dirtyLines);
+const popRandomElem = (array) => {
+    const randomIndex = Math.floor((Math.random() * array.length) + 0.1);
+    const newArray = array.splice(randomIndex, 1);
+    return newArray
 };
 
 const drawsMark = (mark, cell) => {
     const targetCell = document.querySelector(`[cell = '${cell}']`);
     targetCell.textContent = `${mark}`;
-    console.log(targetCell)
+};
+
+const marksCellWithin = (lines) => {
+    let continues = true;
+
+    if (continues) lines.forEach(line => {
+
+        if (continues) line.forEach(cell => {
+            if (continues) if (cells[cell] == '') {
+                cells[cell] = 'O';
+                console.log(line);
+                drawsMark('O', cell);
+                switchPlayer();
+                continues = false
+            }
+        })
+
+    })
+};
+
+const botPlaysEasy = () => {
+
+    let cleanLine = getLinesWith(3, '');
+    let hasEmpty = getLinesWith(1, '');
+    let linesWithOneO = getLinesWith(1, 'O');
+    let linesWithTwoO = getLinesWith(2, 'O');
+    let linesWithTwoX = popRandomElem (getLinesWith(2, 'X'));
+
+    if (linesWithTwoX.length) marksCellWithin(linesWithTwoX)
+    else if (linesWithTwoO.length) marksCellWithin(linesWithTwoO)
+    else if (linesWithOneO.length) marksCellWithin(linesWithOneO)
+    else if (cleanLine.length) marksCellWithin(cleanLine)
+    else marksCellWithin(hasEmpty)
+};
+
+const botPlaysHard = () => {
+
+    let cleanLine = getLinesWith(3, '');
+    let hasEmpty = getLinesWith(1, '');
+    let linesWithOneO = getLinesWith(1, 'O');
+    let linesWithTwoO = getLinesWith(2, 'O');
+    let linesWithTwoX = getLinesWith(2, 'X');
+
+    if (linesWithTwoX.length) marksCellWithin(linesWithTwoX)
+    else if (linesWithTwoO.length) marksCellWithin(linesWithTwoO)
+    else if (linesWithOneO.length) marksCellWithin(linesWithOneO)
+    else if (cleanLine.length) marksCellWithin(cleanLine)
+    else marksCellWithin(hasEmpty)
 };
