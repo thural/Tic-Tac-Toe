@@ -72,7 +72,7 @@ allCells.forEach(cell => cell.addEventListener('click', (e) => {
 );
 
 const switchPlayer = () => {
-    if (playerMark == 'X') playerMark = 'O', botPlaysHard()
+    if (playerMark == 'X') playerMark = 'O', botPlaysImpossible()
     else playerMark = 'X'
 };
 
@@ -93,28 +93,26 @@ const gamePlay = () => {
 };
 
 const getLinesWith = (number, mark) => {
-    let lines = [];
 
-    logicalLines.forEach(line => {
-        let continues = true;
+    let matchingLines = logicalLines.filter(line => {
+
         let count = 0;
         let hasEmptyCell = false;
 
-        if (continues) line.forEach(cell => {
+        line.forEach(cell => {
             if (cells[cell] == mark) count++
             if (cells[cell] == '') hasEmptyCell = true
         });
 
         if (count >= number) {
-            if (hasEmptyCell) lines.push(line)
-            else count = 0
-        } else count = 0
+            if (hasEmptyCell) return true
+        }
+
     });
+    return matchingLines
+};
 
-    return lines
-}
-
-const popRandomElem = (array) => {
+const popRandom = (array) => {
     const randomIndex = Math.floor((Math.random() * array.length) + 0.1);
     const newArray = array.splice(randomIndex, 1);
     return newArray
@@ -133,7 +131,6 @@ const marksCellWithin = (lines) => {
         if (continues) line.forEach(cell => {
             if (continues) if (cells[cell] == '') {
                 cells[cell] = 'O';
-                console.log(line);
                 drawsMark('O', cell);
                 switchPlayer();
                 continues = false
@@ -149,7 +146,7 @@ const botPlaysEasy = () => {
     let hasEmpty = getLinesWith(1, '');
     let linesWithOneO = getLinesWith(1, 'O');
     let linesWithTwoO = getLinesWith(2, 'O');
-    let linesWithTwoX = popRandomElem (getLinesWith(2, 'X'));
+    let linesWithTwoX = popRandom (getLinesWith(2, 'X'));
 
     if (linesWithTwoX.length) marksCellWithin(linesWithTwoX)
     else if (linesWithTwoO.length) marksCellWithin(linesWithTwoO)
@@ -172,5 +169,48 @@ const botPlaysHard = () => {
     else if (linesWithTwoO.length) marksCellWithin(linesWithTwoO)
     else if (linesWithOneO.length) marksCellWithin(linesWithOneO)
     else if (cleanLine.length) marksCellWithin(cleanLine)
+    else marksCellWithin(hasEmpty)
+};
+
+const botPlaysImpossible = () => {
+
+    let cleanLines = getLinesWith(3, '');
+    let hasEmpty = getLinesWith(1, '');
+    let linesWithOneO = getLinesWith(1, 'O');
+    let linesWithTwoO = getLinesWith(2, 'O');
+    let linesWithTwoX = getLinesWith(2, 'X');
+    let linesWithOneX = getLinesWith(1, 'X');
+
+    let intersectLinesWithX = () => {
+        if (linesWithOneX.length > 1) {
+
+            let intersectCells = linesWithOneX[0].filter(cell => {
+               if (linesWithOneX[1].includes(cell)) {
+                   if(cells[cell]=='') return true
+                   else return []
+               }
+            })
+
+            return intersectCells
+        }
+    };
+
+
+
+    if (cleanLines.length > 4 && cells[5] == '') marksCellWithin([[5]])
+    else if (cleanLines.length == 4){
+        if(cells[5]=='X') marksCellWithin(popRandom([logicalLines[6], logicalLines[7]]))
+    }
+    else if (linesWithOneX.length > 3 && cells[5] == '') marksCellWithin([[5]])
+    else if (intersectLinesWithX.length) {
+        let intersectXandO = intersectLinesWithX.filter(line => linesWithOneO.includes(line));
+        if (intersectXandO.length) marksCellWithin(intersectXandO)
+        else marksCellWithin(intersectLinesWithX)
+    }
+    
+    else if (linesWithTwoO.length) marksCellWithin(linesWithTwoO)
+    else if (linesWithTwoX.length) marksCellWithin(linesWithTwoX)
+    else if (linesWithOneO.length) marksCellWithin(linesWithOneO)
+    else if (cleanLines.length) marksCellWithin(cleanLines)
     else marksCellWithin(hasEmpty)
 };
