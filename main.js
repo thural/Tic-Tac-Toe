@@ -92,23 +92,27 @@ const gamePlay = () => {
 
 };
 
-const getLinesWith = (number, mark) => {
+const getLinesWith = (numOfMark, mark) => {
+    let numOfEmpty = 3 - numOfMark;
+    if (mark == '') numOfEmpty = 3;
 
     let matchingLines = logicalLines.filter(line => {
 
-        let count = 0;
-        let hasEmptyCell = false;
+        let countOfMark = 0;
+        let countOfEmpty = 0;
+        //if(numOfEmpty == undefined) countOfEmpty = countOfMark, console.log('numOfEmpty is undefined')
 
         line.forEach(cell => {
-            if (cells[cell] == mark) count++
-            if (cells[cell] == '') hasEmptyCell = true
+            if (cells[cell] == mark) countOfMark ++
+            if (cells[cell] == '') countOfEmpty ++
         });
-
-        if (count >= number) {
-            if (hasEmptyCell) return true
+        
+        if (countOfMark == numOfMark) {
+            if (countOfEmpty == numOfEmpty) return true
         }
 
     });
+
     return matchingLines
 };
 
@@ -124,7 +128,8 @@ const drawsMark = (mark, cell) => {
 };
 
 const marksCellWithin = (lines) => {
-    let continues = true;
+    let continues = false;
+    if(playerMark == 'O') if (lines.length) continues = true;
 
     if (continues) lines.forEach(line => {
 
@@ -140,6 +145,52 @@ const marksCellWithin = (lines) => {
     })
 };
 
+const concatArraysOfArray  = (arrays) => {
+    let concat = [];
+  
+    arrays.forEach(array => {
+      array.forEach (elem => concat.push(elem))
+    });
+  
+    return concat
+  };
+
+  const findMostRepeatedElem = (array) => {
+    
+    let theElem;
+    let prevCount = 0;
+    let count = 0;
+    
+    array.forEach(elem => {  
+    
+      array.forEach(otherElem => {
+        if (otherElem == elem) count++
+      });
+    
+      if (count > prevCount) {
+        theElem = elem;
+        prevCount = count
+      }
+    
+      count = 0;
+        
+    });
+    return theElem
+  };
+
+const mostIntersectingCell = (array1, array2) => {
+
+    
+    let allArray1Elems = concatArraysOfArray(array1);
+    let allArray2Elems = concatArraysOfArray(array2);
+    let allElems = allArray1Elems.filter(elem => allArray2Elems.includes(elem))
+    let allCleanElems = allElems.filter(elem => cells[elem] == '');
+    let theElem = findMostRepeatedElem (allCleanElems);
+  
+    return [[theElem]]
+  
+  };
+////////////////////////////////
 const botPlaysEasy = () => {
 
     let cleanLine = getLinesWith(3, '');
@@ -148,11 +199,11 @@ const botPlaysEasy = () => {
     let linesWithTwoO = getLinesWith(2, 'O');
     let linesWithTwoX = popRandom (getLinesWith(2, 'X'));
 
-    if (linesWithTwoX.length) marksCellWithin(linesWithTwoX)
-    else if (linesWithTwoO.length) marksCellWithin(linesWithTwoO)
-    else if (linesWithOneO.length) marksCellWithin(linesWithOneO)
-    else if (cleanLine.length) marksCellWithin(cleanLine)
-    else marksCellWithin(hasEmpty)
+    marksCellWithin(linesWithTwoO)
+    marksCellWithin(linesWithTwoX)
+    marksCellWithin(linesWithOneO)
+    marksCellWithin(cleanLine)
+    marksCellWithin(hasEmpty)
 };
 
 const botPlaysHard = () => {
@@ -164,53 +215,34 @@ const botPlaysHard = () => {
     let linesWithTwoX = getLinesWith(2, 'X');
     let linesWithOneX = getLinesWith(1, 'X');
 
-    if (linesWithTwoX.length) marksCellWithin(linesWithTwoX)
-    else if (linesWithOneX.length) marksCellWithin(linesWithOneX)
-    else if (linesWithTwoO.length) marksCellWithin(linesWithTwoO)
-    else if (linesWithOneO.length) marksCellWithin(linesWithOneO)
-    else if (cleanLine.length) marksCellWithin(cleanLine)
-    else marksCellWithin(hasEmpty)
+    marksCellWithin(linesWithTwoX)
+    marksCellWithin(linesWithOneX)
+    marksCellWithin(linesWithTwoO)
+    marksCellWithin(linesWithOneO)
+    marksCellWithin(cleanLine)
+    marksCellWithin(hasEmpty)
 };
 
-const botPlaysImpossible = () => {
 
-    let cleanLines = getLinesWith(3, '');
-    let hasEmpty = getLinesWith(1, '');
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+const botPlaysImpossible = () => {
     let linesWithOneO = getLinesWith(1, 'O');
     let linesWithTwoO = getLinesWith(2, 'O');
     let linesWithTwoX = getLinesWith(2, 'X');
     let linesWithOneX = getLinesWith(1, 'X');
-
-    let intersectLinesWithX = () => {
-        if (linesWithOneX.length > 1) {
-
-            let intersectCells = linesWithOneX[0].filter(cell => {
-               if (linesWithOneX[1].includes(cell)) {
-                   if(cells[cell]=='') return true
-                   else return []
-               }
-            })
-
-            return intersectCells
-        }
-    };
-
-
-
-    if (cleanLines.length > 4 && cells[5] == '') marksCellWithin([[5]])
-    else if (cleanLines.length == 4){
-        if(cells[5]=='X') marksCellWithin(popRandom([logicalLines[6], logicalLines[7]]))
-    }
-    else if (linesWithOneX.length > 3 && cells[5] == '') marksCellWithin([[5]])
-    else if (intersectLinesWithX.length) {
-        let intersectXandO = intersectLinesWithX.filter(line => linesWithOneO.includes(line));
-        if (intersectXandO.length) marksCellWithin(intersectXandO)
-        else marksCellWithin(intersectLinesWithX)
-    }
     
-    else if (linesWithTwoO.length) marksCellWithin(linesWithTwoO)
-    else if (linesWithTwoX.length) marksCellWithin(linesWithTwoX)
-    else if (linesWithOneO.length) marksCellWithin(linesWithOneO)
-    else if (cleanLines.length) marksCellWithin(cleanLines)
-    else marksCellWithin(hasEmpty)
+    marksCellWithin(linesWithTwoO)
+    marksCellWithin(linesWithTwoX)
+    
+    /////////////////////// edit below only
+    if (cells[5] == '') {
+        if (linesWithOneX.length == 3) marksCellWithin([concatArraysOfArray(linesWithOneX).filter(cell => [5].includes(cell))])
+        else marksCellWithin([concatArraysOfArray(linesWithOneX).filter(cell => [1,3,7,9].includes(cell))])
+    } else if (cells[5] == 'X') marksCellWithin ([concatArraysOfArray(linesWithOneX).filter(cell => [1,3,7,9].includes(cell))])
+    else if (linesWithOneX.length == 4) marksCellWithin ([concatArraysOfArray(linesWithOneX).filter(cell => [2,4,6,8].includes(cell))])
+    else marksCellWithin ([concatArraysOfArray(linesWithOneX).filter(cell => [1,3,7,9].includes(cell))])
+    marksCellWithin(linesWithOneX)    
 };
