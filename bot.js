@@ -21,6 +21,7 @@ const botFactory = (mode) => {
     };
 
     const getLinesWith = (numMark, mark) => {
+
         let numEmpty = 3 - numMark;
         if (mark == '') numEmpty = 3;
 
@@ -39,7 +40,7 @@ const botFactory = (mode) => {
             }
 
         });
-
+        
         return filterDublicates(
             concatArrays(matchingLines).filter(
                 cell => cells[cell] == ''

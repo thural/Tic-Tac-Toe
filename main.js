@@ -1,9 +1,15 @@
-let mode = 'easy';
 let mark = 'X';
+let mode = 'hard';
 let roundCount = 1;
 let playerOneScore = 0;
 let playerTwoScore = 0;
 let bot = botFactory(mode);
+
+const playerOne = document.querySelector('.player.one > .crown');
+const playerTwo = document.querySelector('.player.two > .crown');
+
+const crown = document.createElement('img');
+crown.src = './crown.svg';
 
 const createObject = (repeats, value) => {
     let object = {};
@@ -28,11 +34,19 @@ const logicalLines = [
 
 const gridCells = document.querySelectorAll('[cell]');
 const message = document.querySelector('.message');
+const modeBtns = document.querySelectorAll('.modes > .button');
+
+modeBtns.forEach(button => button.addEventListener('click', (e) => {
+    document.querySelector('.selected').classList.toggle('selected');
+    e.target.classList.add('selected');
+    mode = e.target.textContent;
+    newGame (mode)
+}));
 
 gridCells.forEach(cell => cell.addEventListener('click', (e) => {
     const mark = e.target.textContent;
     const cellNumber = e.target.getAttribute('cell');
-    if (isGameOver()) return
+    if (isGameOver() || mark == 'O') return
     if (mark == '') {
         e.target.textContent = 'X';
         cells[cellNumber] = 'X';
@@ -108,19 +122,21 @@ const newRound = () => {
     message.textContent = `round ${roundCount}`;
     gridCells.forEach(cell => cell.textContent = '');
     cells = createObject(9, '');
-    mark = 'X'
+    mark = 'X';
+    resetPlayingClass()
 };
 
 const playRound = () => {
-    
+
+    shiftPlayingClass();
     const state = getState(mark);
 
-    if (mark == 'X') mark = 'O', bot.plays()
+    if (mark == 'X') mark = 'O', setTimeout(bot.plays, 1000);
     else mark = 'X';
-
+    
     if (state.won) {
         updateState(state);
-        isGameOver() ? announceWinner() : newRound()
+        isGameOver() ? announceWinner(state.mark) : newRound()
     };
 
     if (!hasEmptyCell()) roundCount++, newRound();
@@ -128,19 +144,38 @@ const playRound = () => {
 };
 
 const isGameOver = () => {
-    if (playerOneScore == 3 || playerTwoScore == 3) return true
-    else return false
+    return (playerOneScore == 3 || playerTwoScore == 3)
 };
 
-const announceWinner = () => {
+const announceWinner = (mark) => {
+    if (mark == 'X') playerOne.appendChild(crown), playerOne.firstChild.classList.add('animate')
+    else playerTwo.appendChild(crown), playerTwo.firstChild.classList.add('animate')
     message.textContent = 'Play again?'
 };
 
 const newGame = (mode) => {
     playerOneScore = 0;
     playerTwoScore = 0;
+    removeChildCrown();
+    bot = botFactory(mode);
     newRound()
-}
+};
+
+const removeChildCrown = () => {
+    if (document.querySelector('.crown img')) document.querySelector('.crown img').remove()
+};
+
+const resetPlayingClass = () => {
+    document.querySelector('.player.one .score').classList.remove('playing');
+    document.querySelector('.player.two .score').classList.remove('playing');
+    document.querySelector('.player.one .score').classList.add('playing')
+};
+
+const shiftPlayingClass = () => {
+    //document.querySelector('.player .playing').classList.toggle('.playing');
+    document.querySelector('.player.one .score').classList.toggle('playing')
+    document.querySelector('.player.two .score').classList.toggle('playing')
+};
 
 
 

@@ -5,7 +5,7 @@ body {
     font-size: 16px;
     align-items: center;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     background-color: #e5e7eb;
     font-family: -apple-system, BlinkMacSystemFont, Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
@@ -20,13 +20,102 @@ body {
     font-size: 1.8rem;
 }
 
+.modes {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 1px;
+    background-color: #374151;
+    padding: 0px;
+    border: 1px solid #374151;
+    border-radius: 12px;
+    box-shadow: 2px 2px 4px 2px rgba(68,68,68,0.6);
+}
+
+.modes > .button {
+    background-color: #cbd1d8;
+    padding: 1rem;
+}
+
+.modes > .button:last-of-type {
+    border-radius: 0px 12px 12px 0px;
+}
+
+.modes > .button:first-of-type {
+    border-radius: 12px 0px 0px 12px;
+}
+
+.selected {
+    
+    animation: shadowIn 0.1s forwards;
+}
+
+@keyframes shadowIn {
+    0% {
+
+    }
+
+    100% {
+        box-shadow: inset 2px 2px 8px 1px rgba(68,68,68,0.6);
+    }
+}
+
 .player {
+    display: grid;
+    grid-template-rows: 3fr 1fr;
+    justify-content: center;
+    align-items: center;
+}
+
+.crown {
+    display: flex;
+    height: 100%;
+}
+
+.animate{
+    /*transform: translate(60%, 90%) rotate(0deg);
+    transition: transform 300ms ease-in-out 1s;*/
+    animation: fadeRotateSlide 0.3s forwards;
+}
+
+@keyframes fadeRotateSlide {
+    0% {
+        opacity: 0;
+        transform: rotate(-45deg);
+
+    }
+
+    100% {
+        opacity: 1;
+        transform: translate(60%, 90%) rotate(0deg)
+    }
+}
+
+.crown > img {
+    height: 50%;
+    opacity: 0;
+    object-fit: contain;
+    
+    
+}
+.player > * {
     padding: .5rem 1rem .5rem  1rem;
 }
 
 .playing {
     border-radius: 50px;
     background-color: #fdba74;
+    animation: fadeIn 0.5s forwards;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
 }
 
 .playBoard {
