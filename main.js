@@ -32,6 +32,7 @@ const message = document.querySelector('.message');
 gridCells.forEach(cell => cell.addEventListener('click', (e) => {
     const mark = e.target.textContent;
     const cellNumber = e.target.getAttribute('cell');
+    if (isGameOver()) return
     if (mark == '') {
         e.target.textContent = 'X';
         cells[cellNumber] = 'X';
@@ -39,42 +40,50 @@ gridCells.forEach(cell => cell.addEventListener('click', (e) => {
     }
 }));
 
+message.addEventListener('click', () => {
+    if (message.textContent == 'Play again?') {
+        roundCount = 0;
+        newGame();
+        updateState({ won: false, mark: 'X' })
+    }
+});
+
 const hasEmptyCell = () => {
-    let hasEmpty = false;
 
     for (key in cells) {
-        if (cells[key] == '') hasEmpty = true
+        if (cells[key] == '') return true
     };
 
-    return hasEmpty
+    return false
 };
 
 const getLines = (mark) => {
-    let targetLines = [];
 
-    logicalLines.forEach(line => {
-        const present = () => {
-            line.forEach(cell => {
-                if (cells[cell] == mark) return true
-            })
-            return false
-        };
-        if (present) targetLines.push(line)
+    let targetLines = logicalLines.filter(line => {
+        let found = false;
+
+        line.forEach(cell => {
+            if (cells[cell] == mark) found = true
+        });
+
+        if (found) return true
     });
 
     return targetLines
 };
 
 const getState = (mark) => {
-    let targetLines = getLines(mark);
+
     let won = false;
     let winningLine = [];
 
-    targetLines.forEach(line => {
+    getLines(mark).forEach(line => {
         let count = 0;
+
         line.forEach(cell => {
             if (cells[cell] == mark) count++
         });
+
         if (count == 3) won = true, winningLine = line
         else count = 0
     });
@@ -83,7 +92,7 @@ const getState = (mark) => {
 };
 
 const updateState = (state) => {
-    console.log(state);
+
     if (state.mark == 'X') {
         if (state.won) playerOneScore++;
         document.querySelector('.player.one .score').textContent = `Player One ${playerOneScore}`
@@ -103,20 +112,35 @@ const newRound = () => {
 };
 
 const playRound = () => {
+    
     const state = getState(mark);
 
     if (mark == 'X') mark = 'O', bot.plays()
     else mark = 'X';
 
-    if (state.won) updateState(state), newRound();
+    if (state.won) {
+        updateState(state);
+        isGameOver() ? announceWinner() : newRound()
+    };
+
     if (!hasEmptyCell()) roundCount++, newRound();
 
 };
 
-const gameStart = (mode) => {
-    
-    newRound()
+const isGameOver = () => {
+    if (playerOneScore == 3 || playerTwoScore == 3) return true
+    else return false
 };
+
+const announceWinner = () => {
+    message.textContent = 'Play again?'
+};
+
+const newGame = (mode) => {
+    playerOneScore = 0;
+    playerTwoScore = 0;
+    newRound()
+}
 
 
 
