@@ -25,14 +25,14 @@ const botFactory = (mode) => {
         let numEmpty = 3 - numMark;
         if (mark == '') numEmpty = 3;
 
-        let matchingLines = logicalLines.filter(line => {
+        let matchingLines = board.lines.filter(line => {
 
             let countMark = 0;
             let countEmpty = 0;
 
             line.forEach(cell => {
-                if (cells[cell] == mark) countMark++
-                if (cells[cell] == '') countEmpty++
+                if (board.cells[cell] == mark) countMark++
+                if (board.cells[cell] == '') countEmpty++
             });
 
             if (countMark == numMark) {
@@ -43,7 +43,7 @@ const botFactory = (mode) => {
         
         return filterDublicates(
             concatArrays(matchingLines).filter(
-                cell => cells[cell] == ''
+                cell => board.cells[cell] == ''
             )
         )
     };
@@ -54,8 +54,8 @@ const botFactory = (mode) => {
         if (mark == 'O') if (lines.length) continues = true;
 
         if (continues) lines.forEach(cell => {
-            if (continues) if (cells[cell] == '') {
-                cells[cell] = 'O';
+            if (continues) if (board.cells[cell] == '') {
+                board.cells[cell] = 'O';
                 const targetCell = document.querySelector(`[cell = '${cell}']`);
                 targetCell.textContent = 'O';
                 playRound();
@@ -79,14 +79,14 @@ const botFactory = (mode) => {
             marksCell(linesWithTwoO);
             marksCell(linesWithTwoX);
 
-            if (cells[5] == '') {
+            if (board.cells[5] == '') {
 
                 if (linesWithOneX.length == 6) marksCell([5])
                 else if (linesWithOneX.length == 4) marksCell([5])
                 else if (linesWithOneO.length) marksCell(linesWithOneX.filter(cell => [1, 3, 7, 9].includes(cell)))
                 else marksCell(linesWithOneX.filter(cell => [2, 4, 6, 8].includes(cell)))
 
-            } else if (cells[5] == 'X') marksCell(linesWithOneX.filter(cell => [1, 3, 7, 9].includes(cell)))
+            } else if (board.cells[5] == 'X') marksCell(linesWithOneX.filter(cell => [1, 3, 7, 9].includes(cell)))
             else if (linesWithOneX.length == 6) marksCell(linesWithOneX.filter(cell => [2, 4, 6, 8].includes(cell)))
             else marksCell(linesWithOneX.filter(cell => [1, 3, 7, 9].includes(cell)));
             marksCell(linesWithOneX)
@@ -101,10 +101,10 @@ const botFactory = (mode) => {
 
             marksCell(linesWithTwoO);
             marksCell(linesWithTwoX);
-            if (cells[5] == '') {
+            if (board.cells[5] == '') {
                 if (linesWithOneX.length == 6) marksCell([5])
                 else marksCell(linesWithOneX.filter(cell => [2, 4, 6, 8].includes(cell)))
-            } else if (cells[5] == 'X') marksCell(linesWithOneX.filter(cell => [1, 3, 7, 9].includes(cell)))
+            } else if (board.cells[5] == 'X') marksCell(linesWithOneX.filter(cell => [1, 3, 7, 9].includes(cell)))
             else marksCell(linesWithOneX.filter(cell => [2, 4, 6, 8].includes(cell)));
             marksCell(linesWithOneX);
             marksCell(linesWithOneO)

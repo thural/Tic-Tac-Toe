@@ -46,7 +46,6 @@ body {
 }
 
 .selected {
-    
     animation: shadowIn 0.1s forwards;
 }
 
@@ -62,7 +61,7 @@ body {
 
 .player {
     display: grid;
-    grid-template-rows: 3fr 1fr;
+    grid-template-rows: 2fr 1fr;
     justify-content: center;
     align-items: center;
 }
