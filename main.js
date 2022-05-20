@@ -22,7 +22,8 @@ cells.forEach(cell => cell.addEventListener('click', (e) => {
     e.target.textContent = 'X';
     board.cells[cellNumber] = 'X';
     player.plays();
-    setTimeout(playRound, 500);
+    //setTimeout(playRound, 500);
+    playRound();
 
 }));
 
@@ -100,6 +101,7 @@ class Round {
     rebuild() {
         display.score();
         cells.forEach(cell => cell.textContent = '');
+        this.count = 1;
         player.turn = true;
         board = new Board;
     }
@@ -148,9 +150,9 @@ let player = new Player;
 let display = new Display;
 let bot = botFactory(game.mode);
 
-const refreshScore = () => {
-    if (player.turn) bot.score++
-    else player.score++
+const refreshScore = (state) => {
+    if (state.mark == 'X') player.score++
+    else bot.score++
     display.score();
     round.count++;
 };
@@ -166,22 +168,23 @@ const newGame = (mode) => {
 
 const playRound = () => {
 
-    if (board.filled()) {
-        round.count++;
-        round.rebuild();
-        return
-    };
-
     if (round.state().over) {
-        refreshScore();
+        refreshScore(round.state());
         if (game.over()) display.winner()
         else round.rebuild()
     } else {
         bot.plays()
         if (round.state().over) {
-            refreshScore();
+            refreshScore(round.state());
             if (game.over()) display.winner()
             else round.rebuild()
         }
+    };
+
+    if(game.over()) return;
+
+    if (board.filled()) {
+        round.count++;
+        round.rebuild();
     }
 };
