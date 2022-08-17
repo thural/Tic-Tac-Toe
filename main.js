@@ -26,7 +26,8 @@ cells.forEach(cell => cell.addEventListener('click', (e) => {
 message.addEventListener('click', () => {
   if (message.textContent == 'Play again?') {
     newGame(game.mode);
-    refreshScore({ match: false, mark: 'X' })
+    refreshScore({ mark: 0 });
+    console.log(player.score)
   }
 });
 
@@ -133,8 +134,10 @@ let display = new Display;
 let bot = botFactory(game.mode);
 
 const refreshScore = (state) => {
-  if (state.mark == 'X') player.score++
-  else bot.score++
+  if (state.mark != 0) {
+    if (state.mark == 'X') player.score++
+    else bot.score++
+  };
   display.score();
   round.count++;
 };
