@@ -27,7 +27,6 @@ message.addEventListener('click', () => {
   if (message.textContent == 'Play again?') {
     newGame(game.mode);
     refreshScore({ mark: 0 });
-    console.log(player.score)
   }
 });
 
@@ -138,8 +137,9 @@ const refreshScore = (state) => {
     if (state.mark == 'X') player.score++
     else bot.score++
   };
-  display.score();
   round.count++;
+  display.score();
+  
 };
 
 const newGame = (mode) => {
@@ -167,9 +167,9 @@ const playRound = () => {
   };
 
   if (game.over()) return;
-
   if (board.filled()) {
     round.count++;
-    round.rebuild();
+    round.rebuild()
   }
+  console.log("board is filled", `round count: ${round.count}`)
 };
