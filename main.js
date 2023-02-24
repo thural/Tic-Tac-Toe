@@ -9,18 +9,17 @@ modeBtns.forEach(button => button.addEventListener('click', (e) => {
   e.target.classList.add('selected');
   game.mode = e.target.textContent;
   newGame(game.mode)
+  refreshScore({ mark: 0 });
 }));
 
 cells.forEach(cell => cell.addEventListener('click', (e) => {
-
   const cellMark = e.target.textContent;
   const cellNumber = e.target.getAttribute('cell');
-  if (!player.turn || game.over() || cellMark == 'O' || cellMark != '') return
+  if (!player.turn || game.over || cellMark == 'O' || cellMark != '') return
   e.target.textContent = 'X';
   board.cells[cellNumber] = 'X';
   player.plays();
   playRound();
-
 }));
 
 message.addEventListener('click', () => {
@@ -31,30 +30,28 @@ message.addEventListener('click', () => {
 });
 
 class Display {
-
   constructor() {
     this.cells = document.querySelectorAll('[cell]');
     this.message = document.querySelector('.message');
     this.crown = crown
   }
 
-  score() {
+  get score() {
     message.textContent = `round ${round.count}`;
     document.querySelector('.player.one .score').textContent = `Player One ${player.score}`;
     document.querySelector('.player.two .score').textContent = `Player Two ${bot.score}`
   }
 
-  winner() {
+  get winner() {
     const elem = document.querySelector(`.player.${!player.turn ? 'one' : 'two'} > .crown`)
     elem.appendChild(crown);
     elem.firstChild.classList.add('animate');
     message.textContent = 'Play again?'
   }
 
-  removeCrown() {
+  get removeCrown() {
     if (document.querySelector('.crown img')) document.querySelector('.crown img').remove()
   }
-
 }
 
 class Game {
@@ -62,17 +59,17 @@ class Game {
     this.mode = 'hard';
   }
 
-  over() {
+  get over() {
     return (player.score == 3 || bot.score == 3)
   }
 };
 
 class Round {
   constructor() {
-    this.count = 1
+    this.count = 1;
   }
 
-  state() {
+  get state() {
     let mark = undefined;
     if (!player.turn) mark = 'X';
     else mark = 'O';
@@ -83,14 +80,12 @@ class Round {
     return { mark, winningLine }
   }
 
-  rebuild() {
-    display.score();
+  get rebuild() {
+    display.score;
     cells.forEach(cell => cell.textContent = '');
-    this.count = 1;
     player.turn = true;
     board = new Board;
   }
-
 };
 
 class Player {
@@ -120,7 +115,7 @@ class Board {
     return object
   }
 
-  filled() {
+  get filled() {
     return !Object.values(this.cells).some(value => value == '')
   }
 };
@@ -137,39 +132,36 @@ const refreshScore = (state) => {
     if (state.mark == 'X') player.score++
     else bot.score++
   };
+
   round.count++;
-  display.score();
-  
+  display.score;
 };
 
 const newGame = (mode) => {
   bot = botFactory(mode);
   player = new Player;
   game = new Game;
-  display.removeCrown();
-  display.score();
-  round.rebuild()
+  display.removeCrown;
+  display.score;
+  round.rebuild;
+  round.count = 0;
 };
 
 const playRound = () => {
 
-  if (round.state().winningLine) {
-    refreshScore(round.state());
-    if (game.over()) display.winner()
-    else round.rebuild()
+  if (round.state.winningLine) {
+    refreshScore(round.state);
+    if (game.over) display.winner
+    else round.rebuild
   } else {
-    bot.plays()
-    if (round.state().winningLine) {
-      refreshScore(round.state());
-      if (game.over()) display.winner()
-      else round.rebuild()
+    bot.plays();
+    if (round.state.winningLine) {
+      refreshScore(round.state);
+      if (game.over) display.winner
+      else round.rebuild
     }
   };
 
-  if (game.over()) return;
-  if (board.filled()) {
-    round.count++;
-    round.rebuild()
-  }
-  console.log("board is filled", `round count: ${round.count}`)
+  if (game.over) return;
+  if (board.filled) round.count = round.count + 1, round.rebuild
 };

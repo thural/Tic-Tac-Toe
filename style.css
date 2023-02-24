@@ -34,6 +34,7 @@ body {
 
 .modes > .button {
     background-color: #cbd1d8;
+    cursor: pointer;
     padding: 1rem;
 }
 
@@ -134,9 +135,11 @@ body {
     font-size: 4rem;
     border-radius: 10px;
     background-color: #d1d5db;
+    cursor: default;
 }
 
 .message {
     margin: 1rem;
     font-size: 1.8rem;
+    cursor: default;
 }

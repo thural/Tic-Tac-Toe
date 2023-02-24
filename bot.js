@@ -1,4 +1,5 @@
 const botFactory = (mode) => {
+  
   let turn = true;
 
   const concatArrays = (arrays) => {
