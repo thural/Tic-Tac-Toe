@@ -1,46 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tic Tac Toe</title>
     <link rel="stylesheet" href="./style.css">
+    <script src="./bot.js" defer></script>
     <script src="./main.js" defer></script>
-    <script src="./bot.js"></script>
 </head>
+
 <body>
-
-    <div class="scoreBoard">
-        <div class="player one">
-            <div class="crown"></div>
-            <div class="score playing">Player One 0</div>
+    <div class="container">
+        <div class="scoreBoard">
+            <div class="player one">
+                <div class="crown"></div>
+                <div class="score playing">Player One 0</div>
+            </div>
+            <div class="player two">
+                <div class="crown"></div>
+                <div class="score">Player Two 0</div>
+            </div>
         </div>
-        <div class="player two">
-            <div class="crown"></div>
-            <div class="score">Player Two 0</div>
+
+        <div class="playBoard" aria-label="Tic Tac Toe Game Board">
+            <div cell="1" role="button" tabindex="0" aria-label="Cell 1"></div>
+            <div cell="2" role="button" tabindex="1" aria-label="Cell 2"></div>
+            <div cell="3" role="button" tabindex="2" aria-label="Cell 3"></div>
+            <div cell="4" role="button" tabindex="3" aria-label="Cell 4"></div>
+            <div cell="5" role="button" tabindex="4" aria-label="Cell 5"></div>
+            <div cell="6" role="button" tabindex="5" aria-label="Cell 6"></div>
+            <div cell="7" role="button" tabindex="6" aria-label="Cell 7"></div>
+            <div cell="8" role="button" tabindex="7" aria-label="Cell 8"></div>
+            <div cell="9" role="button" tabindex="8" aria-label="Cell 9"></div>
+        </div>
+
+        <div class="message">round 1</div>
+
+        <div class="modes" role="radiogroup" aria-label="Game Difficulty">
+            <div class="button" role="radio" aria-checked="false">easy</div>
+            <div class="button" role="radio" aria-checked="false">impossible</div>
+            <div class="button selected" role="radio" aria-checked="true">hard</div>
         </div>
     </div>
-
-    <div class="playBoard">
-        <div cell="1"></div>
-        <div cell="2"></div>
-        <div cell="3"></div>
-        <div cell="4"></div>
-        <div cell="5"></div>
-        <div cell="6"></div>
-        <div cell="7"></div>
-        <div cell="8"></div>
-        <div cell="9"></div>
-    </div>
-
-    <div class="message">round 1</div>
-
-    <div class="modes">
-        <div class="button">easy</div>
-        <div class="button">impossible</div>
-        <div class="button selected">hard</div>
-    </div>
-
 </body>
+
 </html>
